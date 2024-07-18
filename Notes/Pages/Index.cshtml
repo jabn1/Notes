@@ -1,0 +1,70 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+
+<div class="row mb-2">
+    <div class="">
+        <form method="post" asp-page-handler="CreateNote">
+            <div asp-validation-summary="None" class="text-danger"></div>
+            <div class="row">
+                <div class="form-group col-10">
+
+                    
+
+                    <textarea asp-for="Text" class="form-control jqte-textarea"></textarea>
+                    <span asp-validation-for="Text" class="text-danger"></span>
+                    <span asp-validation-for="PlainText" class="text-danger"></span>
+                </div>
+                <div class="form-group col-1">
+                    <input type="number" style="width: -webkit-fill-available;" readonly asp-for="NewNoteParentId" id="NewNoteParentId" onclick="this.value = null" />
+                    <input type="submit" value="Add" class="btn btn-primary py-0 mt-2" />
+                    <input style="visibility: hidden; height: 0; width: 0;" asp-for="PlainText" class="jqte-plaintext m-0 p-0" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+
+    @foreach (var note in Model.Notes)
+    {
+        <div class="card p-0 mb-2">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <div class="d-flex flex-column float-end" style="margin-left: 10px;">
+                        <h6 class="card-subtitle float-end mb-2">[@note.NoteId] @note.CreatedDate.ToString("yyyy-MM-dd HH:mm")</h6>
+
+                        <div>
+                            <button onclick="SelectNote(@note.NoteId)" class="card-subtitle btn btn-primary float-end py-0 px-1" style="margin-left: 5px;">Select</button>
+                            <form method="post" asp-page-handler="CancelNote">
+                                <input type="hidden" value="@note.NoteId" asp-for="NoteId" />
+                                <input type="submit" onclick="return confirm('Are you sure you want to delete this note?')" class="px-1 card-subtitle btn btn-primary btn-danger float-end py-0" value="Delete" />
+                            </form>
+
+                        </div>
+                    </div>
+
+                    <p class="card-text" style="white-space: break-spaces;">@Html.Raw(note.Text)</p>
+
+                </li>
+                @foreach (var childNote in note.ParentNotes.OrderBy(x => x.NoteId))
+                {
+                    <li class="list-group-item">
+                        <div class="card-subtitle float-end">@childNote.CreatedDate.ToString("yyyy-MM-dd HH:mm")</div>
+                        <p class="card-text" style="white-space: break-spaces;">@Html.Raw(childNote.Text)</p>
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
