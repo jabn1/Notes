@@ -1,0 +1,33 @@
+﻿@page
+@model Notes.Pages.OCRModel
+@{
+    ViewData["Title"] = "OCR";
+}
+
+<div class="card mb-2 p-3">
+    <form enctype="multipart/form-data" method="post">
+        <dl>
+            <dd>
+                <input asp-for="File" type="file">
+                <span asp-validation-for="File"></span>
+            </dd>
+        </dl>
+        <input asp-page-handler="Upload" class="btn btn-sm btn-outline-secondary" type="submit" value="Upload" />
+    </form>
+</div>
+
+@if (@TempData["fileText"] != null)
+{
+    <textarea style="display: none;" id="outputtext">@TempData["fileText"]</textarea>
+    <div class="card p-2" style="white-space: pre-line;">
+        <button class="btn btn-sm btn-outline-secondary col-1" onclick="CopyTextFromElement('outputtext')">Copy</button>
+        @TempData["fileText"]
+    </div>
+}
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
