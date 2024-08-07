@@ -4,11 +4,17 @@
     ViewData["Title"] = "OCR";
 }
 
-<div class="card mb-2 p-3">
+<div class="card mb-2 p-3"
+     onpaste="onPaste(event,'fileInput')"
+     ondrop="onDrop(event,'fileInput')"
+     ondragenter="event.preventDefault()"
+     ondragover="event.preventDefault()"
+     ondragleave="event.preventDefault()">
+
     <form enctype="multipart/form-data" method="post">
         <dl>
             <dd>
-                <input asp-for="File" type="file">
+                <input asp-for="File" type="file" id="fileInput">
                 <span asp-validation-for="File"></span>
             </dd>
         </dl>

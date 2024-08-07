@@ -19,3 +19,18 @@ function CopyTextFromElement(id) {
     navigator.clipboard.writeText(copyText.value);
 
 }
+
+function onDrop(e, fileInputId) {
+    e.preventDefault();
+    let fileInput = document.getElementById(fileInputId);
+    fileInput.files = e.dataTransfer.files;
+    const event = new Event('change', { bubbles: true });
+    fileInput.dispatchEvent(event);
+}
+
+function onPaste(e, fileInputId) {
+    let fileInput = document.getElementById(fileInputId);
+    fileInput.files = e.clipboardData.files;
+    const event = new Event('change', { bubbles: true });
+    fileInput.dispatchEvent(event);
+}

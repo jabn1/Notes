@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 using Tesseract;
 
 namespace Notes.Pages
@@ -31,19 +32,17 @@ namespace Notes.Pages
                 using var image = new System.Drawing.Bitmap(memoryStream);
 
                 using var pix = PixConverter.ToPix(image);
-                using var resized = pix.Scale(3, 3);
-                using var gray = resized.ConvertRGBToGray();
+                using var resized = pix.Scale(5, 5);
 
-                using var inverted = gray.Invert();
-
-                using var page = engine.Process(inverted);
+                using var page = engine.Process(resized);
 
                 var meanConfidence = page.GetMeanConfidence();
                 var text = page.GetText();
 
                 if (!String.IsNullOrWhiteSpace(text))
                 {
-                    TempData["fileText"] = text.Trim();
+                    var resultString = Regex.Replace(text.Trim(), @"^\s+$[\r\n]*", string.Empty, RegexOptions.Multiline);
+                    TempData["fileText"] = resultString;
                     TempData["meanConfidence"] = meanConfidence.ToString();
                 }
             }
