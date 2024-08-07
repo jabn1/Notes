@@ -19,7 +19,7 @@
                     <span asp-validation-for="PlainText" class="text-danger"></span>
                 </div>
                 <div class="form-group col-1">
-                    <input type="number" style="width: -webkit-fill-available;" readonly asp-for="NewNoteParentId" id="NewNoteParentId" onclick="this.value = null" />
+                    <input type="number" style="width: -webkit-fill-available;" value="@TempData["parentId"]" readonly asp-for="NewNoteParentId" id="NewNoteParentId" onclick="this.value = null" />
                     <input type="submit" value="Add" class="btn btn-primary py-0 mt-2" />
                     <input style="visibility: hidden; height: 0; width: 0;" asp-for="PlainText" class="jqte-plaintext m-0 p-0" />
                 </div>

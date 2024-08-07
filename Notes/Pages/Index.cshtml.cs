@@ -41,6 +41,8 @@ namespace Notes.Pages
         {
             await SaveNote(Text, PlainText, NewNoteParentId);
 
+            TempData["parentId"] = NewNoteParentId; 
+
             return Redirect("/");
         }
         [BindProperty]
