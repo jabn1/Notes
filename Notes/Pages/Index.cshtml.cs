@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Notes.Data;
 using Notes.Entities;
 using System.ComponentModel.DataAnnotations;
+using System.Web;
 
 namespace Notes.Pages
 {
@@ -21,10 +22,6 @@ namespace Notes.Pages
         [BindProperty]
         public string Text { get; set; } = "";
 
-        [MinLength(1)]
-        [Required]
-        [BindProperty]
-        public string PlainText { get; set; } = "";
 
         [BindProperty]
         public int? NewNoteParentId { get; set; }
@@ -39,9 +36,7 @@ namespace Notes.Pages
 
         public async Task<IActionResult> OnPostCreateNote()
         {
-            await SaveNote(Text, PlainText, NewNoteParentId);
-
-            TempData["parentId"] = NewNoteParentId; 
+            await SaveNote(Text, NewNoteParentId);
 
             return Redirect("/");
         }
@@ -63,8 +58,9 @@ namespace Notes.Pages
             Notes = await applicationDbContext.Notes.Include(x => x.ParentNotes).Where(x => !x.Cancelled && !x.Completed && x.ParentNoteId == null).OrderByDescending(x => x.NoteId).ToListAsync();
         }
 
-        async Task SaveNote(string note, string plainText, int? parentId)
+        async Task SaveNote(string note, int? parentId)
         {
+            var plainText = note;
             applicationDbContext.Notes.Add(new Note
             {
                 Text = note,
